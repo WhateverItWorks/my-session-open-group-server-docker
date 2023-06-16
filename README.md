@@ -1,3 +1,5 @@
+> Note: Session open group servers provide transit encryption, but open group messages are not encrypted while stored on the server; closed groups (which can be created within Session itself) are a better solution for high-security communications with groups of 100 or less people.
+
 ### my-session-open-group-server-docker-compose
 Session open groups servers (SOGS) are group chat servers that can host thousands of chat participants.
 
