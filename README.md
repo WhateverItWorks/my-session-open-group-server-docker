@@ -1,99 +1,516 @@
-![example workflow](https://github.com/nielsandriesse/session-open-group-server/actions/workflows/check.yml/badge.svg)
 
-[API Documentation](https://github.com/nielsandriesse/session-open-group-server/blob/main/DOCUMENTATION.md)
 
-[CLI Reference](https://github.com/nielsandriesse/session-open-group-server/blob/main/CLI.md)
+All endpoints return the status code in the response body because that's the only way to propagate the status code back to the client when using onion requests.
 
-Want to build from source? See [BUILDING.md](https://github.com/nielsandriesse/session-open-group-server/blob/main/BUILDING.md).  
-Want to deploy using Docker? See [DOCKER.md](https://github.com/nielsandriesse/session-open-group-server/blob/main/DOCKER.md).
+## Endpoints
 
-## Installation Instructions
+### GET /rooms/:room_id
 
-### [Video Guide](https://www.youtube.com/watch?v=D83gKXn6iTI)
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | No       |       |
+| Room          | No       |       |
 
-**Note:** .debs for the Session Open Group server are currently only available for Ubuntu 20.04.  
-For other operating systems, you can either [build from source](https://github.com/nielsandriesse/session-open-group-server/blob/main/BUILDING.md) or use [Docker](https://github.com/nielsandriesse/session-open-group-server/blob/main/DOCKER.md).
+Returns information about the room with the given ID.
 
-### Step 1: Pull in the Session open group server executable:
-
-```
-sudo curl -so /etc/apt/trusted.gpg.d/oxen.gpg https://deb.oxen.io/pub.gpg
-echo "deb https://deb.oxen.io $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/oxen.list
-sudo apt update
-sudo apt install session-open-group-server
-sudo chown _loki /var/lib/session-open-group-server -R
-```
-
-### Step 2: Add a room
-
-Add a room of your choice with the following command:
+**Response:**
 
 ```
-session-open-group-server --add-room {room_id} {room_name}
+{
+    status_code: u16,
+    room: {
+        id: String,
+        name: String
+    }
+}
 ```
 
-`room_id` must be lowercase and consist of only letters, numbers and underscores.
+### GET /rooms
 
-For **example**:
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | No       |       |
+| Room          | No       |       |
 
-```
-session-open-group-server --add-room fish FishingAustralia
-```
+Returns a list of all rooms on the server.
 
-### Step 3: Print your server's URL
-
-Print the URL users can use to join rooms on your open group server by running:
-
-```
-session-open-group-server --print-url
-```
-
-This will output a result similar to:
+**Response:**
 
 ```
-http://[host_name_or_ip]/[room_id]?public_key=2054fa3271f27ec9e55492c85d022f9582cb4aa2f457e4b885147fb913b9c131
+{
+    status_code: u16,
+    rooms: [
+        {
+            id: String,
+            name: String
+        },
+        ...
+    ]
+}
 ```
 
-You will need to replace `[host_name_or_ip]` with the IP address of your VPS or the domain mapping to your IP address, and `[room_id]` with the ID of one of the rooms you created earlier.
+### POST /files
 
-For **example**:
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
 
-```
-http://116.203.217.101/fish?public_key=2054fa3271f27ec9e55492c85d022f9582cb4aa2f457e4b885147fb913b9c131
-```
+Store a file on the server.
 
-This URL can then be used to join the group inside the Session app.
-
-### Step 4: Make yourself a moderator
-
-Make yourself a moderator using the following command: 
+**Expected body:**
 
 ```
-session-open-group-server --add-moderator {your_session_id} {room_id}
+{
+    file: String // base64 encoded data
+}
 ```
 
-For **example**:
+**Response:**
 
 ```
-session-open-group-server --add-moderator 05d871fc80ca007eed9b2f4df72853e2a2d5465a92fcb1889fb5c84aa2833b3b40 fish
+{
+    status_code: u16
+}
 ```
 
+### POST /rooms/:room_id/image
 
-### Step 5: Add an image for your new room (Optional)
+| Header        | Required | Notes     |
+| ------------- | -------- | --------- |
+| Authorization | Yes      | Moderator |
+| Room          | No       |           |
 
-- Add your room on Session desktop using the URL printed earlier
-- Use Session desktop to upload a picture for your room
+Set the image for a room.
 
-Or
-
-- Upload a JPG to your VPS
-- Put it in `/var/lib/session-open-group-server/files`
-- Rename it to `{room_id}` (no file extension)
-
-## Customization
-
-The default options the Session open group server runs with should be fine in most cases, but if you like you can run on a custom port or host, specify the path to the X25519 key pair you want to use, etc. To do this, simply add [the right arguments](https://github.com/nielsandriesse/session-open-group-server/blob/main/BUILDING.md#step-3-run-it) to the `ExecStart` line in your systemd service file (normally located under `/etc/systemd/system`) and restart your service using:
+**Expected body:**
 
 ```
-systemctl restart session-open-group-server.service
+{
+    file: String // base64 encoded data
+}
+```
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    room_id: String
+}
+```
+
+### GET /files/:file_id
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Get a file from the server.
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    result: String // base64 encoded data
+}
+```
+
+### GET /rooms/:room_id/image
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | No       |       |
+| Room          | No       |       |
+
+Returns the preview image for the given group.
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    result: String // base64 encoded data
+}
+```
+
+### GET /auth_token_challenge?public_key=string
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | No       |       |
+| Room          | Yes      |       |
+
+Get an auth token challenge. The requesting user generates a symmetric key from the ephemeral public key returned by the server and their private key, which can be used to decrypt the ciphertext and get the auth token.
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    challenge: {
+        ciphertext: String, // base64 encoded data
+        ephemeral_public_key: String // base64 encoded data
+    }
+}
+```
+
+### POST /claim_auth_token
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Claim the auth token in the `Authorization` header.
+
+**Expected body:**
+
+```
+{
+    public_key: String
+}
+```
+
+**Response:**
+
+```
+{
+    status_code: u16
+}
+```
+
+### DELETE /auth_token
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Delete the auth token in the `Authorization` header.
+
+**Response:**
+
+```
+{
+    status_code: u16
+}
+```
+
+### POST /compact_poll
+| Header        | Required | Notes                                                                |
+| ------------- | -------- | -------------------------------------------------------------------- |
+| Authorization | No       | Authorization is handled on a room-by-room basis in the request body |
+| Room          | No       |                                                                      |
+
+Poll for new messages, new deletions and the current moderator list for multiple rooms all in one request.
+
+**Expected body:**
+
+```
+{
+    requests: [
+        {
+            room_id: String,
+            auth_token: String,
+            from_deletion_server_id: Option<i64>,
+            from_message_server_id: Option<i64>
+        },
+        {
+            ...
+        }
+    ]
+}
+```
+
+**Response:**
+
+```
+{
+    status_code: u16
+    results: [
+        {
+            room_id: String,
+            status_code: u16,
+            deletions: [
+                {
+                    deletion_server_id: i64,
+                    deleted_message_id: i64
+                },
+                {
+                    ...
+                }
+            ]
+            messages: [
+                {
+                    server_id: i64,
+                    public_key: String,
+                    timestamp: i64,
+                    data: String,
+                    signature: String
+                },
+                {
+                    ...
+                }
+            ]
+            moderators: [ "public_key_0", "public_key_1", "public_key_2", ... ]
+        },
+        {
+            ...
+        }
+    ]
+}
+```
+
+### POST /messages
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Store the given message on the server.
+
+**Expected body:**
+
+```
+{
+    public_key: Option<String>, // the public key of the sender
+    timestamp: i64, // the sent timestamp of the message
+    data: String, // the serialized protobuf
+    signature: String // the base64 encoded message signature
+}
+```
+
+**Response:**
+
+```
+{
+    status_code: u16
+    message: {
+        server_id: String,
+        public_key: Option<String>
+        timestamp: i64
+        data: String
+        signature: String
+    }
+}
+```
+
+### GET /messages?from_server_id=i64&limit=u16
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Get messages from the server. If `from_server_id` is set only messages stored after that server ID are returned (limited to a maximum of 256 messages). Otherwise, if `limit` is set, the last `limit` messages stored on the server are returned (limited to a maximum of 256 messages).
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    messages: [
+        {
+            server_id: String,
+            public_key: Option<String>, // the public key of the sender
+            timestamp: i64, // the sent timestamp of the message
+            data: String, // the serialized protobuf
+            signature: String // the base64 encoded message signature
+        },
+        ...
+    ]
+}
+```
+
+### POST /delete_messages
+
+| Header        | Required | Notes              |
+| ------------- | -------- | ------------------ |
+| Authorization | Yes      | Basic OR Moderator |
+| Room          | Yes      |                    |
+
+Deletes the messages with the given IDs from the server. The requesting user must either be the sender of the messages or have moderation permission.
+
+**Expected body:**
+
+```
+{
+    ids: [ 0, 1, 2, ... ], // the server IDs of the messages to delete
+}
+```
+
+**Response:**
+
+```
+{
+    status_code: u16
+}
+```
+
+### DELETE /messages/:message_id
+
+| Header        | Required | Notes              |
+| ------------- | -------- | ------------------ |
+| Authorization | Yes      | Basic OR Moderator |
+| Room          | Yes      |                    |
+
+Delete the message with the given ID from the server. The requesting user must either be the sender of the message or have moderation permission.
+
+**Response:**
+
+```
+{
+    status_code: u16
+}
+```
+
+### GET /deleted_messages?from_server_id=i64&limit=u16
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Get deleted messages from the server. If `from_server_id` is set only deletions that happened after that server ID are returned (limited to a maximum of 256 deletions). Otherwise, if `limit` is set, the last `limit` deletions stored on the server are returned (limited to a maximum of 256 deletions).
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    ids: [
+        {
+            deletion_server_id: i64,
+            deleted_message_id: i64
+        },
+        {
+            ...
+        }
+    ]
+}
+```
+
+### GET /moderators
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Get the full list of moderators.
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    moderators: [ "public_key_0", "public_key_1", "public_key_2", ... ]
+}
+```
+
+### POST /block_list
+
+| Header        | Required | Notes     |
+| ------------- | -------- | --------- |
+| Authorization | Yes      | Moderator |
+| Room          | Yes      |           |
+
+Ban the given public key from the server.
+
+**Expected body:**
+
+```
+{
+    public_key: String
+}
+```
+
+**Response:**
+
+```
+{
+    status_code: u16
+}
+```
+
+### POST /ban_and_delete_all
+
+| Header        | Required | Notes     |
+| ------------- | -------- | --------- |
+| Authorization | Yes      | Moderator |
+| Room          | Yes      |           |
+
+Ban the given public key from the server and delete all messages sent by them.
+
+**Expected body:**
+
+```
+{
+    public_key: String
+}
+```
+
+**Response:**
+
+```
+{
+    status_code: u16
+}
+```
+
+### DELETE /block_list/:public_key
+
+| Header        | Required | Notes     |
+| ------------- | -------- | --------- |
+| Authorization | Yes      | Moderator |
+| Room          | Yes      |           |
+
+Unban the given public key from the server.
+
+**Response:**
+
+```
+{
+    status_code: u16
+}
+```
+
+### GET /block_list
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Get the full list of banned public_keys.
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    moderators: [ "public_key_0", "public_key_1", "public_key_2", ... ]
+}
+```
+
+### GET /member_count
+
+| Header        | Required | Notes |
+| ------------- | -------- | ----- |
+| Authorization | Yes      | Basic |
+| Room          | Yes      |       |
+
+Get the member count for the given room.
+
+**Response:**
+
+```
+{
+    status_code: u16,
+    member_count: usize
+}
 ```
