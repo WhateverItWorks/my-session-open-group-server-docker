@@ -4,7 +4,7 @@ Session open groups servers (SOGS) are group chat servers that can host thousand
 
 ### CLI
 
-With the server running in the background (e.g. using systemd), you can run the following commands to perform various operations:
+With the server running in the background (e.g. using docker -d), you can run the following commands to perform various operations:
 
 | Command                                 | Effect                            |
 | --------------------------------------- |:---------------------------------:|
