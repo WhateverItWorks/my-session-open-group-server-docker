@@ -5,7 +5,7 @@ services:
     #build:
       #context: .
       #dockerfile: Dockerfile
-        image: session-open-group-server
+        image: massiveboxe/session-open-group:latest
         container_name: session-open-group
         hostname: session-open-group
         restart: always
