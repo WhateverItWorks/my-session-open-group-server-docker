@@ -1,3 +1,5 @@
+### my-session-open-group-server-docker-compose
+Session open groups servers (SOGS) are group chat servers that can host thousands of chat participants.
 
 
 All endpoints return the status code in the response body because that's the only way to propagate the status code back to the client when using onion requests.
