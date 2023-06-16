@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+    session-open-group-server:
+        image: session-open-group-server
+        container_name: session-open-group
+        hostname: session-open-group
+        restart: always
+        volumes:
+            - './session-open-group-data:/session-open-group-server/target/release/data'
+        ports:
+            - '9999:80'
