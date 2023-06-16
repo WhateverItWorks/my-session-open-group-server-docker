@@ -13,34 +13,32 @@ In some instances it might be more beginner-friendly, however it is also slightl
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/nielsandriesse/session-open-group-server.git
-cd session-open-group-server
+git clone https://github.com/WhateverItWorks/my-session-open-group-server-docker.git session
+cd session
 ```
 
 ### Step 2: Create or pull a docker image
 
 ```bash
-sudo docker build -t session-open-group-server .
+sudo docker build -t session .
 ```
 
-This will create an image for our container called `session-open-group-server`.   
-If your device can't handle the building process or you don't want to build on your server machine, in the next step you will be told how to use a pre-built image.
+This will create an image for our container called `session`.   
 
 ### Step 3: Run the docker image
 
 ```bash
 sudo docker run \
-    --name session-open-group \
-    --restart unless-stopped \
-    -v session-open-group-data:/session-open-group-server/target/release/data \
+    -d \
+    --name session \
+    --restart always \
+    -v ./session-open-group-data:/session-open-group-server/target/release/data \
     -p 9999:80 \
-    session-open-group-server
+    massiveboxe/session-open-group
 ```
 
-This will start an auto-restarting container named `session-open-group` on port 9999, with a persistent data volume called `session-open-group-data`, based on the image we've created in the step before.  
+This will start an auto-restarting container named `session` on port 9999, with a persistent data volume called `session-open-group-data`, based on the image we've created in the step before.  
 *If you've chosen to use a pre-built image*, replace  `session-open-group-server` with `massiveboxe/session-open-group`.
-
-Tip: You can add the `-d` flag after `docker run` to start the container in the background.
 
 ### Step 4: Configure
 
@@ -56,7 +54,10 @@ And this one will take you to the path where the server binary is stored:
 cd /session-open-group-server/target/release
 ```
 
-You can now edit the configuration as you please. You can follow the [steps indicated in the README.md](https://github.com/nielsandriesse/session-open-group-server#step-2-add-a-room) and [the CLI reference](https://github.com/nielsandriesse/session-open-group-server/blob/main/CLI.md), just **remember to use** `./session-open-group-server` **instead of** `session-open-group-server` **or** `/usr/bin/session-open-group-server`**.** Examples:
+You can now edit the configuration as you please. You can follow the [steps indicated in the README.md](https://github.com/WhateverItWorks/my-session-open-group-server-docker#CLI) and [the CLI reference](https://github.com/nielsandriesse/session-open-group-server/blob/main/CLI.md), just **remember to use** `./session-open-group-server` **instead of** `session-open-group-server` **or** `/usr/bin/session-open-group-server`
+
+
+**.** Examples:
 
 - Print the server URL: `./session-open-group-server --print-url`
 - Become moderator of a room: `./session-open-group-server --add-moderator {your_session_id} {room_id}`
