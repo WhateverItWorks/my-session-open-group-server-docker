@@ -54,10 +54,7 @@ And this one will take you to the path where the server binary is stored:
 cd /session-open-group-server/target/release
 ```
 
-You can now edit the configuration as you please. You can follow the [steps indicated in the README.md](https://github.com/WhateverItWorks/my-session-open-group-server-docker#CLI) and [the CLI reference](https://github.com/nielsandriesse/session-open-group-server/blob/main/CLI.md), just **remember to use** `./session-open-group-server` **instead of** `session-open-group-server` **or** `/usr/bin/session-open-group-server`
-
-
-**.** Examples:
+You can now edit the configuration as you please. You can follow the [steps indicated in the README.md](https://github.com/WhateverItWorks/my-session-open-group-server-docker#CLI) and [the CLI reference](https://github.com/WhateverItWorks/my-session-open-group-server-docker#CLI), just **remember to use** `./session-open-group-server` **instead of** `session-open-group-server` **or** `/usr/bin/session-open-group-server`**.** Examples:
 
 - Print the server URL: `./session-open-group-server --print-url`
 - Become moderator of a room: `./session-open-group-server --add-moderator {your_session_id} {room_id}`
