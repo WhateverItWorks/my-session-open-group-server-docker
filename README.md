@@ -3,6 +3,9 @@
 ### my-session-open-group-server-docker-compose
 Session open groups servers (SOGS) are group chat servers that can host thousands of chat participants.
 
+### Manually (Recommended, If the Docker doesn't work for you!)
+https://docs.oxen.io/oxen-docs/products-built-on-oxen/session/guides/open-group-setup
+
 # Deploying with Docker
 
 Deploying with Docker allows you to run Session Group Server on any operating system without having to deal with OS-specific quirks.  
