@@ -3,6 +3,18 @@
 ### my-session-open-group-server-docker-compose
 Session open groups servers (SOGS) are group chat servers that can host thousands of chat participants.
 
+## Security Audits:
+
+- [Internet.ml](https://internet.nl/site/session.whateveritworks.org/2060148/)
+- [HSTS Preload](https://hstspreload.org/)
+- [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=session.whateveritworks.org)
+- [Security Headers](https://securityheaders.com/?q=session.whateveritworks.org&hide=on&followRedirects=on)
+- [pagespeed](https://pagespeed.web.dev/)
+- [webbkoll](https://webbkoll.dataskydd.net/en)
+- [ImmuniWeb](https://www.immuniweb.com/ssl/session.whateveritworks.org/uLlrAeMb/)
+- [Hardenize](https://www.hardenize.com/report/session.whateveritworks.org/1686343966)
+- [Mozilla.org](https://observatory.mozilla.org/)
+
 ### Manually (Recommended, If the Docker doesn't work for you!)
 https://docs.oxen.io/oxen-docs/products-built-on-oxen/session/guides/open-group-setup
 
