@@ -3,12 +3,6 @@
 ### my-session-open-group-server-docker-compose
 Session open groups servers (SOGS) are group chat servers that can host thousands of chat participants.
 
-### Session Open Group Directory
-
-- [sessioncommunities.online](https://sessioncommunities.online/)
-- [sessiongroups.com](https://sessiongroups.com/)
-- [session.directory](https://session.directory/)
-
 ### Security Audits:
 
 - [Internet.nl](https://internet.nl/site/session.whateveritworks.org/2060148/)
