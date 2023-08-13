@@ -2,10 +2,9 @@ version: '3.7'
 
 services:
     session-open-group-server:
-    #build:
-      #context: .
-      #dockerfile: Dockerfile
-        image: massiveboxe/session-open-group:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
         container_name: session-open-group
         hostname: session-open-group
         restart: always
